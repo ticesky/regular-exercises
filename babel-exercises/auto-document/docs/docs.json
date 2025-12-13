@@ -1,0 +1,96 @@
+[
+    {
+        "type": "function",
+        "name": "sayHi",
+        "params": [
+            {
+                "name": "name",
+                "type": "string"
+            },
+            {
+                "name": "age",
+                "type": "number"
+            },
+            {
+                "name": "a",
+                "type": "boolean"
+            }
+        ],
+        "return": "string",
+        "doc": {
+            "description": "say 你好",
+            "tags": [
+                {
+                    "title": "param",
+                    "description": "名字",
+                    "type": {
+                        "type": "NameExpression",
+                        "name": "string"
+                    },
+                    "name": "name"
+                },
+                {
+                    "title": "param",
+                    "description": "年龄",
+                    "type": {
+                        "type": "NameExpression",
+                        "name": "number"
+                    },
+                    "name": "age"
+                },
+                {
+                    "title": "returns",
+                    "description": "返回一句话",
+                    "type": null
+                }
+            ]
+        }
+    },
+    {
+        "type": "class",
+        "name": "Guang",
+        "constructorInfo": {
+            "params": [
+                {
+                    "name": "name",
+                    "type": "string",
+                    "doc": {
+                        "description": "构造函数",
+                        "tags": []
+                    }
+                }
+            ]
+        },
+        "methodsInfo": [
+            {
+                "name": "sayHi",
+                "doc": {
+                    "description": "方法测试",
+                    "tags": []
+                },
+                "params": [],
+                "return": "string"
+            }
+        ],
+        "propertiesInfo": [
+            {
+                "name": "name",
+                "type": "string",
+                "doc": [
+                    {
+                        "description": "name 属性",
+                        "tags": []
+                    },
+                    {
+                        "description": "构造函数",
+                        "tags": []
+                    }
+                ]
+            }
+        ],
+        "doc": {
+            "description": "类测试",
+            "tags": []
+        }
+    }
+]

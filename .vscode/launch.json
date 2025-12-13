@@ -1,0 +1,21 @@
+{
+    "configurations": [
+    {
+        "name": "插入函数调用参数",
+        "program": "${workspaceFolder}/babel-exercises/params-insert/index.js",
+        "request": "launch",
+        "skipFiles": [
+            "<node_internals>/**"
+        ],
+        "type": "node"
+    },
+    {
+        "name": "自动埋点",
+        "program": "${workspaceFolder}/babel-exercises/auto-track/index.js",
+        "request": "launch",
+        "skipFiles": [
+            "<node_internals>/**"
+        ],
+        "type": "node"
+    }]
+}
