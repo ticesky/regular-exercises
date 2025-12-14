@@ -1,0 +1,23 @@
+{
+  "name": "mini-babel",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "bin": {
+    "my-babel": "./src/cli/index.js"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "acorn": "^8.15.0",
+    "chokidar": "^5.0.0",
+    "commander": "^14.0.2",
+    "cosmiconfig": "^9.0.0",
+    "glob": "^13.0.0",
+    "source-map": "^0.7.6"
+  }
+}

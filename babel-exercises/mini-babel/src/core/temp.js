@@ -1,0 +1,161 @@
+const acorn = require("acorn");
+const { literalExtend, astDefinitionsMap } = require('../utils');
+
+const Parser = acorn.Parser;
+const newParser = Parser.extend(literalExtend);
+
+class NodePath {
+    constructor(node, parent, parentPath, key, listKey) {
+        this.node = node;
+        this.parent = parent;
+        this.parentPath = parentPath;
+        this.key = key;
+        this.listKey = listKey;
+    }
+    replaceWith(node) {
+        if (this.listKey) {
+            this.parent[this.key].splice(this.listKey, 1, node);
+        }
+        this.parent[this.key] = node
+    }
+    remove() {
+        if (this.listKey) {
+            this.parent[this.key].splice(this.listKey, 1);
+        }
+        this.parent[this.key] = null;
+    }
+}
+
+function template(code) {
+    return newParser.parse(code, { ecmaVersion: 6 });
+}
+template.expression = function (code) {
+    return template(code).body[0].expression;
+}
+
+function traverse(node, visitors, parent, parentPath, key, listKey) {
+    const definition = astDefinitionsMap.get(node.type);
+
+    let visitorFuncs = visitors[node.type] || {};
+
+    if (typeof visitorFuncs === 'function') {
+        visitorFuncs = {
+            enter: visitorFuncs
+        }
+    }
+    const path = new NodePath(node, parent, parentPath, key, listKey);
+
+    visitorFuncs.enter && visitorFuncs.enter(path);
+
+    if (definition.visitor) {
+        definition.visitor.forEach(key => {
+            const prop = node[key];
+            if (Array.isArray(prop)) { // 如果该属性是数组
+                prop.forEach((childNode, index) => {
+                    traverse(childNode, visitors, node, path, key, index);
+                })
+            } else {
+                traverse(prop, visitors, node, path, key);
+            }
+        })
+    }
+    visitorFuncs.exit && visitorFuncs.exit(path);
+}
+
+class Printer {
+    constructor() {
+        this.buf = '';
+    }
+
+    space() {
+        this.buf += ' ';
+    }
+
+    nextLine() {
+        this.buf += '\n';
+    }
+
+    Program(node) {
+        node.body.forEach(item => {
+            this[item.type](item) + ';';
+            this.nextLine();
+        });
+
+    }
+    VariableDeclaration(node) {
+        this.buf += node.kind;
+        this.space();
+        node.declarations.forEach((declaration, index) => {
+            if (index != 0) {
+                this.buf += ',';
+            }
+            this[declaration.type](declaration);
+        });
+        this.buf += ';';
+    }
+    VariableDeclarator(node) {
+        this[node.id.type](node.id);
+        this.buf += '=';
+        this[node.init.type](node.init);
+    }
+    Identifier(node) {
+        this.buf += node.name;
+    }
+    NumericLiteral(node) {
+        this.buf += node.value;
+    }
+
+}
+class Generator extends Printer {
+
+    generate(node) {
+        this[node.type](node);
+        return this.buf;
+    }
+}
+function generate(node) {
+    return new Generator().generate(node);
+}
+
+function transformSync(code, options) {
+    const ast = newParser.parse(code, { ecmaVersion: 6 });
+
+    const pluginApi = {
+        template
+    }
+    const visitors = {};
+    options.plugins.forEach(([plugin, options]) => {
+        const res = plugin(pluginApi, options);
+        Object.assign(visitors, res.visitor);
+    })
+
+    traverse(ast, visitors);
+    return generate(ast);
+}
+
+const sourceCode = `
+const a = 1;
+`;
+
+function plugin1(api, options) {
+    return {
+        visitor: {
+            Identifier(path) {
+                // path.node.value = 2222;
+                path.replaceWith(api.template.expression(options.replaceName));
+            }
+        }
+    }
+}
+
+const code = transformSync(sourceCode, {
+    plugins: [
+        [
+            plugin1,
+            {
+                replaceName: 'ddddd'
+            }
+        ]
+    ]
+});
+console.log(code);

@@ -10,7 +10,7 @@
  */
 const { declare } = require('@babel/helper-plugin-utils');
 
-const noFunAssignLint = declare((api) => {
+const noFunAssignLintPlugin = declare((api) => {
     api.assertVersion(7);
 
     return {
@@ -62,4 +62,4 @@ const noFunAssignLint = declare((api) => {
     }
 });
 
-module.exports = noFunAssignLint;
+module.exports = noFunAssignLintPlugin;
