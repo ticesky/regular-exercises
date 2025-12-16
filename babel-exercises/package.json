@@ -10,6 +10,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@babel/code-frame": "^7.27.1",
     "@babel/core": "^7.28.5",
     "@babel/generator": "^7.28.5",
     "@babel/helper-module-imports": "^7.27.1",
@@ -18,6 +19,7 @@
     "@babel/template": "^7.27.2",
     "@babel/traverse": "^7.28.5",
     "@babel/types": "^7.28.5",
+    "chalk": "^4.1.1",
     "doctrine": "^3.0.0",
     "fs-extra": "^11.3.2"
   }

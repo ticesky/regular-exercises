@@ -17,5 +17,13 @@
             "<node_internals>/**"
         ],
         "type": "node"
+    },{
+        "name": "try",
+        "program": "${workspaceFolder}/babel-exercises/type-checker/complex-type-checker.js",
+        "request": "launch",
+        "skipFiles": [
+            "<node_internals>/**"
+        ],
+        "type": "node"
     }]
 }

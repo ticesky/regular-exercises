@@ -42,7 +42,7 @@ function typeEval(node, params) {
 
 /**
  * 递归解析 TS 类型注解节点（支持基础类型/泛型/类型别名/条件类型）
- * @param {Object} targetType AST 中的类型注解节点（TSTypeAnnotation/TSTypeReference 等）
+ * @param {import('@babel/types').TSType|import('@babel/types').FlowType} targetType AST 中的类型注解节点（TSTypeAnnotation/TSTypeReference 等）
  * @param {Object} [referenceTypesMap={}] 泛型类型映射表（如 { T: 'string' }）
  * @param {import('@babel/traverse').Scope} [scope] Babel 作用域对象（用于获取类型别名）
  * @returns {string|undefined} 解析后的实际类型字符串，不支持的类型返回 undefined
@@ -77,9 +77,17 @@ function resolveType(targetType, referenceTypesMap = {}, scope) {
         // ========== TS 基础类型关键字（直接节点类型） ==========
         case 'TSNumberKeyword':
             return 'number';
+        case 'TSStringKeyword':
+            return 'string';
 
         // ========== TS 泛型类型引用（如 Alias<T>） ==========
         case 'TSTypeReference': {
+            // 子场景1：泛型类型引用（如 T → 映射为实际类型）
+            const genericTypeName = targetType.typeName?.name;
+            if(referenceTypesMap[genericTypeName]){
+                return referenceTypesMap[genericTypeName]
+            }
+            // 子场景2
             // 1. 从作用域获取类型别名（如 Alias → 存储的类型别名配置）
             const typeAlias = scope?.getData(targetType.typeName?.name);
             if (!typeAlias) return undefined; // 无类型别名，返回 undefined
